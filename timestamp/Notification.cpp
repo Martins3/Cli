@@ -18,3 +18,8 @@ std::string exec(const string cmd) {
     }
     return result;
 }
+
+void test_exec(){
+    string a = "notify-send \"who am i\" \"I am January\" -i /home/shen/Downloads/GitHub-Mark/PNG/GitHub-Mark-64px.png"; 
+    exec(a);
+}
