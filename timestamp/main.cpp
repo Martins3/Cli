@@ -30,4 +30,5 @@ void do_heartbeat(){
 // For security purposes, we don't allow any arguments to be passed into the daemon
 int main(void){
     printf("%s\n", "make it !");
+    do_heartbeat();
 }
