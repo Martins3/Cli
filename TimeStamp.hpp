@@ -6,8 +6,9 @@
 #include <numeric>
 #include <chrono>
 #include <string>
-#include "../utils/Type.hpp"
+#include "./utils/Type.hpp"
 
+// data type
 class TimeStamp{
 public:
     std::chrono::time_point<std::chrono::system_clock> time;

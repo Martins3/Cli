@@ -1,32 +1,29 @@
 CC = clang++
-FLAG = -std=c++14 -g
-TARTGET = Sharp
+FLAG = -std=c++14 -g -Wall -I.
+BOOST_FLAG=
+TARTGET = sharp.out
 
-CPP_SOURCES = $(wildcard ./timestamp/*.cpp)
-CPP_HEADERS = $(wildcard ./timestamp/*.hpp ./utils/Type.hpp) 
+
+CPP_SOURCES = $(wildcard *.cpp )
+CPP_HEADERS = $(wildcard ./utils/*.hpp) 
 OBJ = ${CPP_SOURCES:.cpp=.o} 
 
 
-# 需要实现如何的效果
 ${TARTGET}: ${OBJ}
-	${CC} -o $@ $^
+	${CC} ${FLAG} -o $@ $^
 
 
-# all: library.cpp main.cpp
-# In this case:
-    # $@ evaluates to all
-    # $< evaluates to library.cpp
-    # $^ evaluates to library.cpp main.cpp
-%.o: %.cpp ${HEADERS}
+%.o: %.cpp ${CPP_HEADERS}
 	${CC} ${FLAG} -c $< -o $@
 
 
 run: ${TARTGET}
 	./${TARTGET}
 
+test: ${TARTGET}
+	${TARTGET}
 
 .PHONY: clean run
-
 
 clean:
 	rm -f *.o
