@@ -4,6 +4,9 @@
 The only only way to be sharp is time limitation.
 ![](./src/a.jpg)
 
+## Watch Out
+The auther of this repo is not familiar with boost and C++, you have anything advice about the code, issue it !
+
 ## what can it do
 1. As a tomato clock
 1. When boot, a daemon started, used for as clock
@@ -45,6 +48,7 @@ Server layer and client layer use the TCP for connection.
 [asio](https://www.boost.org/doc/libs/1_68_0/doc/html/boost_asio.html)
 [check port in use](https://stackoverflow.com/questions/33358321/using-c-and-boost-or-not-to-check-if-a-specific-port-is-being-used)
 
+https://stackoverflow.com/questions/1657883/variable-number-of-arguments-in-c
 ## install 
 prequite
 
