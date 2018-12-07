@@ -30,6 +30,7 @@ Server layer and client layer use the TCP for connection.
     1. for reading data
 
 
+## with more conscious 
 
 
 
