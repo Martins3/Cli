@@ -1,23 +1,17 @@
 CC = clang++
 FLAG = -std=c++14 -g -Wall
-BOOST_FLAG= $(FLAG) -lboost_system -pthread -lboost_thread
 TARTGET = sharp.out
 
-CPP_HEADERS = $(wildcard ./utils/*.hpp *.hpp ./timer/*.hpp) 
+BUILD_PROJECT=yes
 
-CPP_SOURCES = $(wildcard *.cpp )
-BOOST_SOURCES = $(wildcard ./timer/*.cpp )
+
+CPP_HEADERS = $(wildcard ./utils/*.hpp *.hpp) 
+CPP_SOURCES = $(wildcard ./utils/*.cpp *.cpp)
 OBJ = ${CPP_SOURCES:.cpp=.o} 
-BOOST_OBJ = ${BOOST_SOURCES:.cpp=.o} 
-
-ALL_OBJ = ${OBJ} ${BOOST_OBJ}
-
-$(OBJ): CXXFLAGS := $(FLAG)
-$(BOOST_OBJ): CXXFLAGS := $(BOOST_FLAG)
 
 
-${TARTGET}: ${ALL_OBJ}
-	${CC} ${FLAG} -o $@ $^
+${TARTGET}: ${OBJ} subsystem
+	${CC} ${FLAG} -o $@ ${OBJ}
 
 
 %.o: %.cpp ${CPP_HEADERS}
@@ -30,8 +24,16 @@ run: ${TARTGET}
 test: ${TARTGET}
 	${TARTGET}
 
-.PHONY: clean run
+subsystem:
+	$(MAKE) -C timer
+
+.PHONY: clean run test subsystem
+
+
 
 clean:
 	rm -f *.o
+	rm -f ./utils/*.o
 	rm -f ${TARTGET}
+	$(MAKE) -C timer clean
+	

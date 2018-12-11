@@ -4,6 +4,9 @@
 The only only way to be sharp is time limitation.
 ![](./src/a.jpg)
 
+## How to use it
+Record before you start it.
+
 ## Watch Out
 The auther of this repo is not familiar with boost and C++, you have anything advice about the code, issue it !
 
@@ -32,6 +35,7 @@ Server layer and client layer use the TCP for connection.
 
 ## with more conscious 
 
+## we can generate the time line in the html format
 
 
 

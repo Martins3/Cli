@@ -1,16 +1,17 @@
 #ifndef TIME_STAMP_HPP
 #define TIME_STAMP_HPP 
 
-#include <numeric>
-#include <chrono>
+#include <ctime>
 #include <string>
+#include "./utils/json.hpp"
 
 // data type
 class TimeStamp{
 public:
-    std::chrono::time_point<std::chrono::system_clock> time;
+    time_t time_point;
     std::string desc;
-    int tag; // tag for statistic
-    TimeStamp(std::string d):time(std::chrono::system_clock::now()), desc(d){}
+    int tag; // tag, use to classify items
+    TimeStamp(std::string d):time_point(time(nullptr)), desc(d){}
+    TimeStamp()=default;
 };
 #endif

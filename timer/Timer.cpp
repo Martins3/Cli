@@ -186,12 +186,12 @@ void Timer::cancel() {}
 void Timer::suspend() {}
 
 bool Timer::is_timing() {
+  // static message use file to connect is ok.
   return false;
 }
 
 int Timer::seconds_left() {
-  // with the help of io
-  
+  // with the help of file io
   return 0;
 }
 

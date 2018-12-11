@@ -23,15 +23,12 @@ public:
   std::vector<std::string> start() {
     std::vector<std::string> msg;
     try {
-      // boost::asio::io_context io;
-      // Winder p(io);
-      // boost::thread(boost::bind(&boost::asio::io_context::run, &io)).detach();
       for (;;) {
         // read the data
         char data[1024];
         memset(data, 0, sizeof(data));
         boost::system::error_code error;
-        size_t length = socket_.read_some(boost::asio::buffer(data), error);
+        socket_.read_some(boost::asio::buffer(data), error);
         if (error == boost::asio::error::eof) {
           std::cout << "Connection closed cleanly by peer" << std::endl;
           break;
@@ -85,6 +82,7 @@ private:
         std::cout << str << std::endl;
       }
       // only check the last one
+      // just send notification instead
       p.set(3);
     }
 

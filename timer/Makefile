@@ -7,9 +7,16 @@ CPP_HEADERS = $(wildcard *.hpp)
 CPP_SOURCES = $(wildcard *.cpp  ./test/main.cpp)
 OBJ = ${CPP_SOURCES:.cpp=.o} 
 
-
+ifndef BUILD_PROJECT
 ${TARTGET}: ${OBJ}
 	${CC} ${LINK_FLAG} -o $@ $^
+	echo "Build from the outside"
+else
+# gcc -shared -o libfoo.so foo.o
+${TARTGET}: ${OBJ}
+	${CC} ${LINK_FLAG} -o $@ $^
+endif
+
 
 %.o: %.cpp ${CPP_HEADERS}
 	${CC} ${FLAG} -c $< -o $@

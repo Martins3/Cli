@@ -7,7 +7,7 @@
 #include "Notification.hpp"
 using namespace std;
 
-std::string exec(const string cmd) {
+std::string Notification::exec(const string cmd) {
     std::array<char, 128> buffer;
     std::string result;
     std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
@@ -19,12 +19,12 @@ std::string exec(const string cmd) {
     return result;
 }
 
-void desktop_notification(){
+void Notification::desktop_notification(){
     string a = "notify-send \"who am i\" \"I am January\" -i /home/shen/Core/Sharp/src/GitHub-Mark-64px.png -u critical"; 
     exec(a);
 }
 
-void sound_notification(){
+void Notification::sound_notification(){
     // use aplay
 }
 
