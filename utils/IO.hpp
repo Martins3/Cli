@@ -8,7 +8,7 @@
 class Loader{
 public:
   static void load();
-  static void store(std::vector<TimeStamp *> & s);
+  static void store();
   static void add_one_record(TimeStamp & t);
 };
 

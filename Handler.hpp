@@ -5,7 +5,8 @@
 class Handler{
 public: 
   void add_time_point(std::string desc);
-
+  void show_time_last();
+  void insert_time_point(std::string event);
 
 public:
     Handler(Handler const&)       = delete;

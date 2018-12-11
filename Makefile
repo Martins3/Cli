@@ -1,6 +1,6 @@
 CC = clang++
-FLAG = -std=c++14 -g -Wall
-TARTGET = sharp.out
+FLAG = -std=c++14 -g -Wall -DDEBUG
+TARTGET = /home/shen/.Application/sharp
 
 BUILD_PROJECT=yes
 
@@ -19,7 +19,7 @@ ${TARTGET}: ${OBJ} subsystem
 
 
 run: ${TARTGET}
-	./${TARTGET}
+	${TARTGET}
 
 test: ${TARTGET}
 	${TARTGET}

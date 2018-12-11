@@ -2,10 +2,23 @@
 
 ## why we want to build this tools
 The only only way to be sharp is time limitation.
-![](./src/a.jpg)
+![](./src/readme-1.jpg)
+
+This is not simply a time tracker, it is a framework to resharp me.
+No more pretending to work harp while watching youtube from time to time.
+
 
 ## How to use it
 Record before you start it.
+
+## TODO
+1. create seperate files for different time
+2. for every events, we can add explnation to it
+3. use web to show time line
+  1. it should be easy
+  2. hard code it instead of reading a file
+4. add thinking about what is currently do
+
 
 ## Watch Out
 The auther of this repo is not familiar with boost and C++, you have anything advice about the code, issue it !
@@ -28,10 +41,8 @@ Server layer and client layer use the TCP for connection.
 2. Statistic
     1. uniform data type
     2. maybe use some python and something else.
-
 3. Server
     1. for reading data
-
 
 ## with more conscious 
 
