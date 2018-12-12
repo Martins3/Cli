@@ -11,13 +11,12 @@ No more pretending to work harp while watching youtube from time to time.
 ## How to use it
 Record before you start it.
 
+
 ## TODO
 1. create seperate files for different time
 2. for every events, we can add explnation to it
-3. use web to show time line
-  1. it should be easy
-  2. hard code it instead of reading a file
 4. add thinking about what is currently do
+5. when one thing has a 
 
 
 ## Watch Out
@@ -36,6 +35,8 @@ The auther of this repo is not familiar with boost and C++, you have anything ad
 We rely on this boost library
 https://www.boost.org/doc/libs/1_36_0/doc/html/boost_asio/tutorial/tuttimer1.html
 Server layer and client layer use the TCP for connection.
+
+just cli, use anything web technology is wasting time
 
 1. User
 2. Statistic
