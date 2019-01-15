@@ -22,6 +22,13 @@ string time_transform(int seconds){
   return ss.str();
 }
 
+void Handler::pop_time_point(){
+  Resource & R = Resource::getInstance();
+  auto & timeline = R.getTimeline();
+  timeline.pop_back();
+  Loader::store();
+}
+
 void Handler::add_time_point(std::string desc){
   TimeStamp t(desc);
   Loader::add_one_record(t);

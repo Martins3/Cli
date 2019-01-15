@@ -1,5 +1,5 @@
 CC = clang++
-FLAG = -std=c++14 -g -Wall -DDEBUG
+FLAG = -std=c++14 -g -Wall
 TARTGET = /home/shen/.Application/sharp
 
 BUILD_PROJECT=yes
@@ -10,7 +10,8 @@ CPP_SOURCES = $(wildcard ./utils/*.cpp *.cpp)
 OBJ = ${CPP_SOURCES:.cpp=.o} 
 
 
-${TARTGET}: ${OBJ} subsystem
+# ${TARTGET}: ${OBJ} subsystem
+${TARTGET}: ${OBJ}
 	${CC} ${FLAG} -o $@ ${OBJ}
 
 
@@ -35,5 +36,5 @@ clean:
 	rm -f *.o
 	rm -f ./utils/*.o
 	rm -f ${TARTGET}
-	$(MAKE) -C timer clean
+	# $(MAKE) -C timer clean
 	

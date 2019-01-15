@@ -7,6 +7,7 @@ public:
   void add_time_point(std::string desc);
   void show_time_last();
   void insert_time_point(std::string event);
+  void pop_time_point();
 
 public:
     Handler(Handler const&)       = delete;
