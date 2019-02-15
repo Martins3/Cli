@@ -6,7 +6,7 @@ class Handler{
 public: 
   void add_time_point(std::string desc);
   void show_time_last();
-  void insert_time_point(std::string event);
+  void insert_time_point(std::string event, int minute);
   void pop_time_point();
 
 public:

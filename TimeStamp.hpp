@@ -13,6 +13,7 @@ public:
     std::vector<std::string> introspection;
     int tag; // tag, use to classify items
     TimeStamp(std::string d):time_point(time(nullptr)), desc(d){}
+    TimeStamp(std::string d, int minutes):time_point(time(nullptr) - 60 * minutes), desc(d){}
     TimeStamp()=default;
     friend std::ostream &operator<<(std::ostream &os, const TimeStamp & t);
 };

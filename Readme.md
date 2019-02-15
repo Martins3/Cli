@@ -13,10 +13,9 @@ Record before you start it.
 
 
 ## TODO
-1. create seperate files for different time
-2. for every events, we can add explnation to it
-4. add thinking about what is currently do
-5. when one thing has a 
+1. use human readable style to store
+2. statistic
+3. we can not statistic everything
 
 
 ## Watch Out

@@ -14,6 +14,14 @@ char statement[] =
     "Please make sure you understand the sharp:\n1. dont't touch phone\n2. "
     "don't leave the sit\n3. don't eat anything\n4. don't let mind wanders\n";
 
+inline void show_help() {
+  printf("Specification is:\n"
+         "-h show this help information\n"
+         "-t show statistic\n"
+         "-i Repair by inserting a event in the timeline\n"
+         "-a show show how much time consume since last event\n");
+}
+
 // command line
 void parse_options(int argc, const char *argv[]);
 
@@ -31,36 +39,52 @@ void parse_options(int argc, const char *argv[]) {
   // auto H = Handler::getInstance()
   // how to use auto, what's the meaning of reference
   Handler &H = Handler::getInstance();
-  Resource &R = Resource::getInstance();
-  while ((opt = getopt(argc, (char **)argv, "hs:p:ai:")) != EOF) {
+  // Resource &R = Resource::getInstance();
+
+  int minutes;
+  string desc;
+  int fix_insertion = 0;
+
+  while ((opt = getopt(argc, (char **)argv, "hasd:t:")) != EOF) {
     switch (opt) {
     case 's':
       // show statistic
       // TODO this part is difficult, make a better judgement for it
       exit(0);
-    case 'i':
-      H.insert_time_point(optarg);
-      exit(0);
-    case 'f':
-      // fix at the last one
-
+    case 't':
+      minutes = strtol(optarg, NULL, 10);
+      if (minutes == errno) {
+        std::cerr << "word id should be a integer" << std::endl;
+        exit(1);
+      }
+      fix_insertion++;
+      break;
+    case 'd':
+      desc = optarg;
+      fix_insertion++;
+      break;
     case 'a':
-      // show how much time alread used
       H.show_time_last();
       exit(0);
     case 'x':
+      H.pop_time_point();
       exit(0);
     case 'h':
-      printf("Specification is:\n"
-             "-h show this help information\n"
-             "-t show statistic\n"
-             "-i Repair by inserting a event in the timeline\n"
-             "   Causing by forgetting, format is hour:min:desc\n"
-             "-a show show how much time consume since last event\n");
+      show_help();
       exit(0);
     default:
       exit(1);
     }
+  }
+
+  if (fix_insertion == 2) {
+    H.insert_time_point(desc, minutes);
+    exit(0);
+  }
+
+  if (fix_insertion == 1) {
+    std::cerr << "option t and option d should appear same time" << endl;
+    exit(1);
   }
 
   // insert a log
@@ -70,6 +94,9 @@ void parse_options(int argc, const char *argv[]) {
     exit(0);
   }
 
+  if (argc == 1) {
+    show_help();
+  }
   // symotion-prefix) test code
   // Loader::store();
 }

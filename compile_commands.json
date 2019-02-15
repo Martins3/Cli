@@ -1,0 +1,16 @@
+[
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-std=c++14",
+            "-g",
+            "-Wall",
+            "-o",
+            "main.o",
+            "main.cpp"
+        ],
+        "directory": "/home/shen/Core/Sharp",
+        "file": "main.cpp"
+    }
+]

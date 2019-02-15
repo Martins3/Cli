@@ -10,7 +10,6 @@ CPP_SOURCES = $(wildcard ./utils/*.cpp *.cpp)
 OBJ = ${CPP_SOURCES:.cpp=.o} 
 
 
-# ${TARTGET}: ${OBJ} subsystem
 ${TARTGET}: ${OBJ}
 	${CC} ${FLAG} -o $@ ${OBJ}
 
@@ -36,5 +35,3 @@ clean:
 	rm -f *.o
 	rm -f ./utils/*.o
 	rm -f ${TARTGET}
-	# $(MAKE) -C timer clean
-	
