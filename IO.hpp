@@ -3,13 +3,14 @@
 
 #include<string>
 #include<vector>
-#include "../TimeStamp.hpp"
+#include "TimeStamp.hpp"
 
 class Loader{
+  std::vector<TimeStamp *> records;
 public:
-  static void load();
-  static void store();
-  static void add_one_record(TimeStamp & t);
+  void load();
+  void store();
+  void add_one_record(TimeStamp & t);
 };
 
 

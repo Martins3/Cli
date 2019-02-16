@@ -1,12 +1,12 @@
 CC = clang++
-FLAG = -std=c++14 -g -Wall
+FLAG = -std=c++11 -g -Wall
 TARTGET = /home/shen/.Application/sharp
 
 BUILD_PROJECT=yes
 
 
-CPP_HEADERS = $(wildcard ./utils/*.hpp *.hpp) 
-CPP_SOURCES = $(wildcard ./utils/*.cpp *.cpp)
+CPP_HEADERS = $(wildcard *.hpp) 
+CPP_SOURCES = $(wildcard *.cpp)
 OBJ = ${CPP_SOURCES:.cpp=.o} 
 
 
