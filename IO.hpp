@@ -6,8 +6,8 @@
 #include "TimeStamp.hpp"
 
 class Loader{
-  std::vector<TimeStamp *> records;
 public:
+  std::vector<TimeStamp *> records;
   void load();
   void store();
   void add_one_record(TimeStamp & t);

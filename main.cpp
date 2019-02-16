@@ -5,10 +5,12 @@
 #include <stdlib.h>
 #include <string>
 #include <unistd.h>
+#include <iomanip>
 #include "IO.hpp"
 
 using namespace std;
 
+extern const std::string src_dir = "/home/shen/Core/Sharp/src/";
 
 // output
 char statement[] =
@@ -47,6 +49,7 @@ void parse_options(int argc, const char *argv[]) {
   while ((opt = getopt(argc, (char **)argv, "sax:h")) != EOF) {
     switch (opt) {
     case 's':
+      statistic();
       exit(0);
     case 'a':
       current_task_last();
@@ -71,8 +74,28 @@ void parse_options(int argc, const char *argv[]) {
   }
 }
 
+void show_statistic(int day){
+
+}
+
 void statistic() {
   printf("input : (num|d|w|m|y)\n");
+  std::string pe;
+  while(true){
+    std::getline (std::cin,pe);
+    if(pe == "q"){
+      break;
+    }
+
+    else if(pe == ""){
+      show_statistic(1);
+    }
+
+    else if(pe == "num"){
+      // show_statistic(1);
+    }
+  }
+  
 }
 
 void add_time_point(string desc, int tag){
@@ -80,6 +103,47 @@ void add_time_point(string desc, int tag){
   loader->add_one_record(t);
 };
 
+string time_transform(int seconds){
+  int sec = seconds % 60;
+  seconds /=60;
+  int min = seconds % 60;
+  seconds /=60;
+  int hour = seconds % 60;
+
+  std::stringstream ss;
+  ss << std::setw(2) << std::setfill('0') << hour << ":";
+  ss << std::setw(2) << std::setfill('0') << min << ":";
+  ss << std::setw(2) << std::setfill('0') << sec;
+  return ss.str();
+}
+
 void current_task_last(){
-  // this is complex, my gold
+  loader->load();
+  vector<TimeStamp *> & a = loader->records;
+  time_t last = a.back()->cal();
+  time_t t = time(nullptr) - last;
+
+  void desktop_notification(const string content, const string icon);
+  desktop_notification(time_transform(t), src_dir + "Birdio");
+  // cout << time_transform(t) << endl;
+}
+
+string exec(const string cmd) {
+  std::array<char, 128> buffer;
+  std::string result;
+  std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
+  if (!pipe)
+    throw std::runtime_error("popen() failed!");
+  while (!feof(pipe.get())) {
+    if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
+      result += buffer.data();
+  }
+  return result;
+}
+
+void desktop_notification(const string content,
+                                        const string icon) {
+  const string quote ="\"";
+  string a = "notify-send " + quote + content + quote + "  -i " + icon;
+  exec(a);
 }

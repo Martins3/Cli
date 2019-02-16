@@ -8,7 +8,8 @@
 
 using json = nlohmann::json;
 using namespace std;
-static const std::string src_dir = "/home/shen/Core/Sharp/src/";
+
+extern const std::string src_dir;
 
 // std::ostream &operator<<(std::ostream &os, const TimeStamp &t) {
   // std::tm *ptm = std::localtime(&(t.time_point));
