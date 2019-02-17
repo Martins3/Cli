@@ -13,6 +13,7 @@ public:
   std::string time_point;
   std::string desc;
   int tag;
+  // time_t time_cache;
 
   TimeStamp(std::string d, int t) : desc(d), tag(t) {
     time_t rawtime;
@@ -22,6 +23,10 @@ public:
     char temp[] = "Wed Feb 13 15:46:11 2013";
     sprintf(temp, "%s", asctime(timeinfo));
     time_point = temp;
+  }
+
+  std::string time_hour_min(){
+    return time_point.substr(3 + 1 + 3 + 1 + 2 + 1, 5);
   }
 
   time_t cal() {
@@ -76,6 +81,7 @@ public:
     if (x == (time_t)-1) {
       assert(0);
     }
+    // time_cache = x;
     return x;
   }
 

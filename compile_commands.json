@@ -12,19 +12,5 @@
         ],
         "directory": "/home/shen/Core/Sharp",
         "file": "main.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-std=c++11",
-            "-g",
-            "-Wall",
-            "-o",
-            "IO.o",
-            "IO.cpp"
-        ],
-        "directory": "/home/shen/Core/Sharp",
-        "file": "IO.cpp"
     }
 ]
