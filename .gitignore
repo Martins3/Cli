@@ -4,6 +4,9 @@ GTAGS
 
 src/
 
+!src/readme-1.jpg
+!src/Birdio-1.jpg
+
 *.json
 
 # Prerequisites
