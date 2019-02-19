@@ -41,6 +41,14 @@ inline void show_help() {
 
 string exec(const string cmd);
 
+struct tm *get_current_time() {
+  time_t rawtime;
+  struct tm *timeinfo;
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+  return timeinfo;
+}
+
 string time_transform(int seconds);
 void parse_options(int argc, const char *argv[]);
 void statistic();
@@ -57,10 +65,10 @@ int main(int argc, const char *argv[]) {
   return 0;
 }
 
-void edit_source() {
-  printf("start vim !\n");
+void edit_file(const char *file) {
+  printf("start nvim !\n");
   char path[200];
-  strcpy(path, (src_dir + "record.json").c_str());
+  strcpy(path, file);
   char program[] = "nvim";
   char *args[] = {program, path, NULL};
   int status;
@@ -70,14 +78,56 @@ void edit_source() {
   wait(&status);
 }
 
+void edit_source() { edit_file((src_dir + "record.json").c_str()); }
+
+void review() {
+  printf("Welcome to review (d|w|m|y|s)\n");
+  char option;
+  scanf("%c", &option);
+  // printf("get option [%c]\n", option);
+
+  auto cur = get_current_time();
+  auto file_name = src_dir + "introspection/";
+  int y = cur->tm_year + 1900;
+  int m = cur->tm_mon + 1;
+  int d = cur->tm_mday;
+
+  switch (option) {
+  case '\n':
+  case 'd':
+    file_name += to_string(y) + "/" + to_string(m) + "/" + to_string(d) + ".md";
+    break;
+  case 'w':
+    // week is tricky
+    file_name +=
+        to_string(y) + "/" + to_string(m) + "/Week/" + to_string(d) + ".md";
+    break;
+  case 'm':
+    file_name += to_string(y) + "/" + to_string(m) + ".md";
+    break;
+  case 'y':
+    file_name += to_string(y) + ".md";
+    break;
+  case 's':
+    file_name += "summary/";
+    break;
+  default:
+    printf("check the input");
+  }
+  edit_file(file_name.c_str());
+}
+
 void parse_options(int argc, const char *argv[]) {
   int opt;
   string desc;
 
-  while ((opt = getopt(argc, (char **)argv, "sax:he")) != EOF) {
+  while ((opt = getopt(argc, (char **)argv, "sax:her")) != EOF) {
     switch (opt) {
     case 's':
       statistic();
+      exit(0);
+    case 'r':
+      review();
       exit(0);
     case 'a':
       desktop_notification(time_transform(get_task_last()), src_dir + "Birdio");
@@ -99,17 +149,20 @@ void parse_options(int argc, const char *argv[]) {
   // insert a log
   if (argc == 2) {
     add_time_point(argv[1], 0);
+    auto t = get_current_time();
     printf("%s", statement);
+    printf("start : %02d:%02d\n", t->tm_hour, t->tm_min);
+
   } else {
     show_help();
   }
 }
 
 time_t n_days_ago(int day) {
-  time_t rawtime;
-  struct tm *timeinfo;
-  time(&rawtime);
-  timeinfo = localtime(&rawtime);
+  // time_t rawtime;
+  // struct tm *timeinfo;
+  // time(&rawtime);
+  auto timeinfo = get_current_time();
   timeinfo->tm_mday = timeinfo->tm_mday - 1;
 
   auto x = mktime(timeinfo);
@@ -153,7 +206,8 @@ void show_statistic(int day) {
     }
 
     cout << start->time_hour_min() << "----->" << end->time_hour_min() << " "
-         << time_transform(r - l) << "  " << start->desc << "  " << end->desc << endl;
+         << time_transform(r - l) << "  " << start->desc << "  " << end->desc
+         << endl;
   }
 
   if (day != 1) {

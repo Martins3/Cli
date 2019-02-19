@@ -2,6 +2,10 @@ GPATH
 GRTAGS
 GTAGS
 
+src/
+
+*.json
+
 # Prerequisites
 *.d
 
@@ -34,3 +38,4 @@ GTAGS
 *.exe
 *.out
 *.app
+
