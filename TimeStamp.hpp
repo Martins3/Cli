@@ -11,11 +11,11 @@
 class TimeStamp {
 public:
   std::string time_point;
-  std::string desc;
   int tag;
+  std::string desc;
   // time_t time_cache;
 
-  TimeStamp(std::string d, int t) : desc(d), tag(t) {
+  TimeStamp(std::string d, int t) :  tag(t), desc(d) {
     time_t rawtime;
     struct tm *timeinfo;
     time(&rawtime);

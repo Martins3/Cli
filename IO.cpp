@@ -20,10 +20,10 @@ extern const std::string src_dir;
 // }
 
 void to_json(json &j, const TimeStamp &p) {
-  j = json{
+  j = {
       {"time", p.time_point},
-      {"desc", p.desc},
       {"tag", p.tag},
+      {"desc", p.desc},
   };
 }
 
@@ -51,6 +51,7 @@ void Loader::store() {
 
   for (auto w : records) {
     json j = *w;
+    // cout << j.dump() << endl;
     outfile << j.dump() << endl;
   }
   outfile.close();

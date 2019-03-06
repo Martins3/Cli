@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <cstdlib>
 #include <ctype.h>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdio.h>
@@ -16,6 +17,14 @@
 #include <unistd.h>
 
 using namespace std;
+
+const std::string ANSI_COLOR_RED = "\x1b[31m";
+const std::string ANSI_COLOR_GREEN = "\x1b[32m";
+const std::string ANSI_COLOR_YELLOW = "\x1b[33m";
+const std::string ANSI_COLOR_BLUE = "\x1b[34m";
+const std::string ANSI_COLOR_MAGENTA = "\x1b[35m";
+const std::string ANSI_COLOR_CYAN = "\x1b[36m";
+const std::string ANSI_COLOR_RESET = "\x1b[0m";
 
 static inline void data_broken(int msg) {
   printf("We found events are not well paired ! Use sharp -e to check data\n");
@@ -136,6 +145,8 @@ void parse_options(int argc, const char *argv[]) {
       add_time_point(optarg, 1);
       exit(0);
     case 'h':
+      // loader->load();
+      // loader->store();
       show_help();
       exit(0);
     case 'e':
@@ -150,7 +161,9 @@ void parse_options(int argc, const char *argv[]) {
   if (argc == 2) {
     add_time_point(argv[1], 0);
     auto t = get_current_time();
-    printf("%s", statement);
+    void show_regulations();
+    show_regulations();
+    // printf("%s", statement);
     printf("start : %02d:%02d\n", t->tm_hour, t->tm_min);
 
   } else {
@@ -158,12 +171,23 @@ void parse_options(int argc, const char *argv[]) {
   }
 }
 
+void show_regulations() {
+  std::string line;
+  std::ifstream infile(src_dir + "Regulation.md");
+  cout << ANSI_COLOR_RED;
+
+  while (std::getline(infile, line)) {
+    cout << line << endl;
+  }
+  cout << ANSI_COLOR_YELLOW;
+}
+
 time_t n_days_ago(int day) {
   // time_t rawtime;
   // struct tm *timeinfo;
   // time(&rawtime);
   auto timeinfo = get_current_time();
-  timeinfo->tm_mday = timeinfo->tm_mday - 1;
+  timeinfo->tm_mday = timeinfo->tm_mday - day;
 
   auto x = mktime(timeinfo);
   if (x == (time_t)-1) {
@@ -205,39 +229,61 @@ void show_statistic(int day) {
       break;
     }
 
-    cout << start->time_hour_min() << "----->" << end->time_hour_min() << " "
-         << time_transform(r - l) << "  " << start->desc << "  " << end->desc
-         << endl;
+    cout << ANSI_COLOR_BLUE << start->time_hour_min() << "----->"
+         << end->time_hour_min() << ANSI_COLOR_YELLOW << " "
+         << time_transform(r - l) << "  " << ANSI_COLOR_CYAN << start->desc
+         << "  " << ANSI_COLOR_GREEN << end->desc << endl;
   }
 
   if (day != 1) {
     printf("recent %d day: %s", day, time_transform(sum).c_str());
   } else {
-    printf("today: %s", time_transform(sum).c_str());
+    time_t threshold = 60 * 60 * 8;
+    cout << ANSI_COLOR_MAGENTA << "today : ";
+    if (sum < threshold) {
+      cout << ANSI_COLOR_RED;
+    } else {
+      cout << ANSI_COLOR_YELLOW;
+    }
+    cout << time_transform(sum);
+    // printf("today: %s", time_transform(sum).c_str());
+  }
+}
+
+inline int get_pos_number_from_user() {
+  printf("Postive number: ");
+  int a;
+  while (true) {
+    if (scanf("%d", &a) == 1 && a > 0) {
+      return a;
+    }
   }
 }
 
 void statistic() {
-  printf("input : (num|d|w|m|y)\n");
+  printf("input : n(um)|d|w|m|y\n");
   std::string pe;
-  while (true) {
-    std::getline(std::cin, pe);
-    if (pe == "q") {
-      break;
-    }
-
-    else if (pe == "") {
-      show_statistic(1);
-      break;
-    }
-
-    else if (pe == "num") {
-      // show_statistic(1);
-    }
-
-    else {
-      printf("Unrecognized command !\n");
-    }
+  char option;
+  scanf("%c", &option);
+  switch (option) {
+  case '\n':
+  case 'd':
+    show_statistic(1);
+    break;
+  case 'w':
+    show_statistic(7);
+    break;
+  case 'm':
+    show_statistic(30);
+    break;
+  case 'y':
+    show_statistic(365);
+    break;
+  case 'n':
+    show_statistic(get_pos_number_from_user());
+    break;
+  default:
+    printf("Unrecognized input");
   }
 }
 
