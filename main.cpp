@@ -58,15 +58,23 @@ struct tm *get_current_time() {
   return timeinfo;
 }
 
+Loader *loader;
+
 string time_transform(int seconds);
 void parse_options(int argc, const char *argv[]);
 void statistic();
 void add_time_point(string desc, int tag);
 // void current_task_last();
 void desktop_notification(const string content, const string icon);
-time_t get_task_last();
 
-Loader *loader;
+std::pair<time_t, bool> get_task_last() {
+  loader->load();
+  vector<TimeStamp *> &a = loader->records;
+  auto ts = a.back();
+  time_t last = ts->cal();
+  time_t t = time(nullptr) - last;
+  return make_pair(t, ts->tag);
+}
 
 int main(int argc, const char *argv[]) {
   loader = new Loader();
@@ -90,10 +98,10 @@ void edit_file(const char *file) {
 void edit_source() { edit_file((src_dir + "record.json").c_str()); }
 
 void review() {
-  printf("Welcome to review (d|w|m|y|s)\n");
+  printf("Welcome to review (d|w|m|y|s|t)\n");
   char option;
   scanf("%c", &option);
-  // printf("get option [%c]\n", option);
+  printf("get option [%c]\n", option);
 
   auto cur = get_current_time();
   auto file_name = src_dir + "introspection/";
@@ -120,17 +128,45 @@ void review() {
   case 's':
     file_name += "summary/";
     break;
+  case 't':
+    file_name = src_dir + "todos.md";
+    break;
   default:
     printf("check the input");
   }
   edit_file(file_name.c_str());
 }
 
+void show_already() {
+  auto x = get_task_last();
+  auto t = x.first;
+  auto work = x.second;
+  string msg;
+  if (work) {
+    msg += "已工作 : ";
+  } else {
+    msg += "已休息 : ";
+  }
+
+  msg += time_transform(t);
+  desktop_notification(msg, src_dir + "Birdio");
+}
+
+void add_todo_item(){
+  cout << ANSI_COLOR_RED << "TODO : ";
+  string a;
+  cin >> a;
+  std::string line;
+  std::ofstream log(src_dir + "todos.md", std::ios_base::app | std::ios_base::out);
+  log << "-. ";
+  log << a << endl;
+}
+
 void parse_options(int argc, const char *argv[]) {
   int opt;
   string desc;
 
-  while ((opt = getopt(argc, (char **)argv, "sax:her")) != EOF) {
+  while ((opt = getopt(argc, (char **)argv, "sax:hert")) != EOF) {
     switch (opt) {
     case 's':
       statistic();
@@ -139,14 +175,15 @@ void parse_options(int argc, const char *argv[]) {
       review();
       exit(0);
     case 'a':
-      desktop_notification(time_transform(get_task_last()), src_dir + "Birdio");
+      show_already();
+      exit(0);
+    case 't':
+      add_todo_item();
       exit(0);
     case 'x':
       add_time_point(optarg, 1);
       exit(0);
     case 'h':
-      // loader->load();
-      // loader->store();
       show_help();
       exit(0);
     case 'e':
@@ -161,8 +198,8 @@ void parse_options(int argc, const char *argv[]) {
   if (argc == 2) {
     add_time_point(argv[1], 0);
     auto t = get_current_time();
-    void show_regulations();
-    show_regulations();
+    void show_file(string);
+    show_file("Regulation.md");
     // printf("%s", statement);
     printf("start : %02d:%02d\n", t->tm_hour, t->tm_min);
 
@@ -171,9 +208,9 @@ void parse_options(int argc, const char *argv[]) {
   }
 }
 
-void show_regulations() {
+void show_file(string file_name) {
   std::string line;
-  std::ifstream infile(src_dir + "Regulation.md");
+  std::ifstream infile(src_dir + file_name);
   cout << ANSI_COLOR_RED;
 
   while (std::getline(infile, line)) {
@@ -187,7 +224,13 @@ time_t n_days_ago(int day) {
   // struct tm *timeinfo;
   // time(&rawtime);
   auto timeinfo = get_current_time();
-  timeinfo->tm_mday = timeinfo->tm_mday - day;
+  if (day != 1) {
+    timeinfo->tm_mday = timeinfo->tm_mday - day;
+  } else {
+    timeinfo->tm_hour = 0;
+    timeinfo->tm_min = 0;
+    timeinfo->tm_sec = 0;
+  }
 
   auto x = mktime(timeinfo);
   if (x == (time_t)-1) {
@@ -288,12 +331,21 @@ void statistic() {
 }
 
 void add_time_point(string desc, int tag) {
-  if (tag == 1) {
-    cout << "last : " << time_transform(get_task_last()) << endl;
+  auto x = get_task_last();
+  auto t = x.first;
+  auto work = x.second;
+
+  if (tag == 1 && work == 0) {
+    cout << "已工作 : " << time_transform(t) << endl;
+    cout << "还有如下可以尝试的事情 : " << endl;
+    show_file("todos.md");
+  }else if((tag ^ work) == 0) {
+    cout << ANSI_COLOR_RED << "Records are not well paired !" << endl;
+    return;
   }
 
-  TimeStamp t(desc, tag);
-  loader->add_one_record(t);
+  TimeStamp ts(desc, tag);
+  loader->add_one_record(ts);
 };
 
 string time_transform(int seconds) {
@@ -308,14 +360,6 @@ string time_transform(int seconds) {
   ss << std::setw(2) << std::setfill('0') << min << ":";
   ss << std::setw(2) << std::setfill('0') << sec;
   return ss.str();
-}
-
-time_t get_task_last() {
-  loader->load();
-  vector<TimeStamp *> &a = loader->records;
-  time_t last = a.back()->cal();
-  time_t t = time(nullptr) - last;
-  return t;
 }
 
 void current_task_last() {

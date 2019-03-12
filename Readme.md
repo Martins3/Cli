@@ -16,11 +16,8 @@ In one word, Read the Fucking Source Code.
 ## TODO
 1. change the element order in record.json
 2. seperate the data of record.json(after there are more 5000 records)
-  
-3. add a function:
-  1. every time finished a work, show something we can do
-  2. add something we can do quickly(as for remove, do it by hand)
 4. show we can do for from yesterday, this month, and this year retrospection
+5. show choice that we can do
 
 ## Ref
 1. [getopts](https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html)
