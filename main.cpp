@@ -4,9 +4,9 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <string>
 #include <unistd.h>
 
@@ -25,6 +25,16 @@ const std::string ANSI_COLOR_BLUE = "\x1b[34m";
 const std::string ANSI_COLOR_MAGENTA = "\x1b[35m";
 const std::string ANSI_COLOR_CYAN = "\x1b[36m";
 const std::string ANSI_COLOR_RESET = "\x1b[0m";
+
+inline int get_pos_number_from_user() {
+  printf("Postive number: ");
+  int a;
+  while (true) {
+    if (scanf("%d", &a) == 1 && a > 0) {
+      return a;
+    }
+  }
+}
 
 static inline void data_broken(int msg) {
   printf("We found events are not well paired ! Use sharp -e to check data\n");
@@ -50,6 +60,7 @@ inline void show_help() {
 
 string exec(const string cmd);
 
+void show_file(string file_name);
 struct tm *get_current_time() {
   time_t rawtime;
   struct tm *timeinfo;
@@ -101,7 +112,6 @@ void review() {
   printf("Welcome to review (d|w|m|y|s|t)\n");
   char option;
   scanf("%c", &option);
-  printf("get option [%c]\n", option);
 
   auto cur = get_current_time();
   auto file_name = src_dir + "introspection/";
@@ -143,22 +153,61 @@ void show_already() {
   auto work = x.second;
   string msg;
   if (work) {
-    msg += "已工作 : ";
-  } else {
     msg += "已休息 : ";
+  } else {
+    msg += "已工作 : ";
   }
 
   msg += time_transform(t);
   desktop_notification(msg, src_dir + "Birdio");
 }
 
-void add_todo_item(){
-  cout << ANSI_COLOR_RED << "TODO : ";
-  string a;
-  cin >> a;
+void remove_todo_item() {
+  // read all the items
+  show_file("todos.md");
+  int index = get_pos_number_from_user() - 1;
+  std::ifstream infile(src_dir + "todos.md");
   std::string line;
-  std::ofstream log(src_dir + "todos.md", std::ios_base::app | std::ios_base::out);
-  log << "-. ";
+  vector<string> items;
+
+  int line_num = 0;
+  while (std::getline(infile, line)) {
+    std::istringstream iss(line);
+    std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+                                     std::istream_iterator<std::string>());
+    if(results.size() != 2){
+      printf("%d the todo format: [A. B] A is num B shouldn't contains any space", line_num);
+      continue;
+    }
+    items.push_back(results[1]);
+    line_num ++;
+  }
+  infile.close();
+
+  // write excpet the index
+  std::ofstream log(src_dir + "todos.md", std::ios_base::out);
+  for (int i = 0; i < items.size(); i++) {
+    if (i == index)
+      continue;
+    log << i + 1 << ". ";
+    log << items[i] << endl;
+  }
+}
+
+void add_todo_item(string a) {
+  if (a == "f") {
+    remove_todo_item();
+    return;
+  }
+  std::ifstream infile(src_dir + "todos.md");
+  std::string line;
+  int index = 0;
+  while (std::getline(infile, line)) {
+    index++;
+  }
+  std::ofstream log(src_dir + "todos.md",
+                    std::ios_base::app | std::ios_base::out);
+  log << index << ". ";
   log << a << endl;
 }
 
@@ -166,7 +215,7 @@ void parse_options(int argc, const char *argv[]) {
   int opt;
   string desc;
 
-  while ((opt = getopt(argc, (char **)argv, "sax:hert")) != EOF) {
+  while ((opt = getopt(argc, (char **)argv, "sax:hert:")) != EOF) {
     switch (opt) {
     case 's':
       statistic();
@@ -178,7 +227,7 @@ void parse_options(int argc, const char *argv[]) {
       show_already();
       exit(0);
     case 't':
-      add_todo_item();
+      add_todo_item(optarg);
       exit(0);
     case 'x':
       add_time_point(optarg, 1);
@@ -293,16 +342,6 @@ void show_statistic(int day) {
   }
 }
 
-inline int get_pos_number_from_user() {
-  printf("Postive number: ");
-  int a;
-  while (true) {
-    if (scanf("%d", &a) == 1 && a > 0) {
-      return a;
-    }
-  }
-}
-
 void statistic() {
   printf("input : n(um)|d|w|m|y\n");
   std::string pe;
@@ -339,7 +378,7 @@ void add_time_point(string desc, int tag) {
     cout << "已工作 : " << time_transform(t) << endl;
     cout << "还有如下可以尝试的事情 : " << endl;
     show_file("todos.md");
-  }else if((tag ^ work) == 0) {
+  } else if ((tag ^ work) == 0) {
     cout << ANSI_COLOR_RED << "Records are not well paired !" << endl;
     return;
   }
@@ -360,10 +399,6 @@ string time_transform(int seconds) {
   ss << std::setw(2) << std::setfill('0') << min << ":";
   ss << std::setw(2) << std::setfill('0') << sec;
   return ss.str();
-}
-
-void current_task_last() {
-  // cout << time_transform(t) << endl;
 }
 
 string exec(const string cmd) {

@@ -18,6 +18,7 @@ In one word, Read the Fucking Source Code.
 2. seperate the data of record.json(after there are more 5000 records)
 4. show we can do for from yesterday, this month, and this year retrospection
 5. show choice that we can do
+6. Encrypt the introspection 
 
 ## Ref
 1. [getopts](https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html)
