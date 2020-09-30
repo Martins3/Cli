@@ -16,6 +16,7 @@
 #include <time.h>
 #include <unistd.h>
 
+
 using namespace std;
 
 const std::string ANSI_COLOR_RED = "\x1b[31m";
@@ -121,6 +122,9 @@ void review() {
 
   switch (option) {
   case '\n':
+  case 'y':
+    file_name += to_string(y) + ".md";
+    break;
   case 'd':
     file_name += to_string(y) + "/" + to_string(m) + "/" + to_string(d) + ".md";
     break;
@@ -131,9 +135,6 @@ void review() {
     break;
   case 'm':
     file_name += to_string(y) + "/" + to_string(m) + ".md";
-    break;
-  case 'y':
-    file_name += to_string(y) + ".md";
     break;
   case 's':
     file_name += "summary/";
@@ -162,24 +163,26 @@ void show_already() {
   desktop_notification(msg, src_dir + "Birdio");
 }
 
+// TODO 对于todo 迁移到新的文件中间去
 void remove_todo_item() {
   // read all the items
   show_file("todos.md");
   int index = get_pos_number_from_user() - 1;
+
   std::ifstream infile(src_dir + "todos.md");
   std::string line;
   vector<string> items;
 
   int line_num = 0;
   while (std::getline(infile, line)) {
-    std::istringstream iss(line);
-    std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
-                                     std::istream_iterator<std::string>());
-    if(results.size() != 2){
-      printf("%d the todo format: [A. B] A is num B shouldn't contains any space", line_num);
-      continue;
+    auto deli = line.find(' ');
+    if(deli == string::npos || line.size() == deli){
+       printf("Wrong todo format : %d  %s\n", line_num, line.c_str());
+       continue;
     }
-    items.push_back(results[1]);
+    // auto first_token = line.substr(0, deli);
+    auto second_token = line.substr(deli, line.size() - deli);
+    items.push_back(second_token);
     line_num ++;
   }
   infile.close();
@@ -194,11 +197,7 @@ void remove_todo_item() {
   }
 }
 
-void add_todo_item(string a) {
-  if (a == "f") {
-    remove_todo_item();
-    return;
-  }
+void add_todo_item_to_file(string a){
   std::ifstream infile(src_dir + "todos.md");
   std::string line;
   int index = 0;
@@ -209,6 +208,17 @@ void add_todo_item(string a) {
                     std::ios_base::app | std::ios_base::out);
   log << index << ". ";
   log << a << endl;
+
+}
+
+void add_todo_item(string a) {
+  if (a == "f") {
+    remove_todo_item();
+  }else if(a == "s"){
+    show_file("todos.md");
+  }else{
+    add_todo_item_to_file(a);
+  }
 }
 
 void parse_options(int argc, const char *argv[]) {
