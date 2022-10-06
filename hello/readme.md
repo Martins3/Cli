@@ -1,0 +1,2 @@
+- nix-instantiate simple.nix
+- nix-store -r /nix/store/llv2qxk9ym29wrp1rb5631pgwmx98i42-simple.drv
